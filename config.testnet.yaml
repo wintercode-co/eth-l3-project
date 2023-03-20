@@ -1,0 +1,8 @@
+polygon_zkevm:
+  rpc_urc : "https://rpc.public.zkevm-test.net"
+    
+scroll_zkevm:
+  rpc_urc : "https://alpha-rpc.scroll.io/l2"
+
+
+account_pk : "0x5dcc746cbd6c512cdd34cd1de8a9d0f038e6eb2ac9c4d12f2c22ab47de27fef4"
