@@ -13,29 +13,28 @@ async fn main() {
     let rollup_config_prov = connect_ws(&conf.rollup_config.rollup_network.rpc_url).await;
 
 
-    let mut last_process_block = 0;
-
-    let mut stream = rollup_config_prov.subscribe_blocks().await.unwrap();
+    let mut stream = rollup_config_prov
+        .subscribe_blocks()
+        .await
+        .unwrap()
+        .chunks(conf.rollup_config.batch_size.into());
     let mut transactions: Vec<H256> = vec![];
 
-    while let Some(mut block) = stream.next().await {
-        transactions.append(block.transactions.as_mut());
-
-        if block.number.unwrap().as_u64() - last_process_block >= 10 {
-            post_transactions_to_rollup(&transactions);
-            transactions = vec![];
-            last_process_block = block.number.unwrap().as_u64();
+    while let Some(blocks) = stream.next().await {
+        for mut block in blocks {
+            transactions.append(&mut block.transactions);
         }
+        post_transactions_to_rollup(&transactions);
     }
 
     /*
-        let signer = conf.get_signer();
-        let signer_address = signer.address();
-        let signer_balance = scroll_zkevm_prov.get_balance(signer_address, Option::None).await.unwrap();
-        println!("Signer Address {:?}", signer_address);
-        println!("Signer balance {:?}", signer_balance);
+    let signer = conf.get_signer();
+    let signer_address = signer.address();
+    let signer_balance = scroll_zkevm_prov.get_balance(signer_address, Option::None).await.unwrap();
+    println!("Signer Address {:?}", signer_address);
+    println!("Signer balance {:?}", signer_balance);
 
-        */
+    */
 }
 
 fn post_transactions_to_rollup(transactions: &Vec<H256>) {

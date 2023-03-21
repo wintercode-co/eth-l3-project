@@ -6,3 +6,6 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+/eth-l3-project.iml
+/modules.xml
+/vcs.xml

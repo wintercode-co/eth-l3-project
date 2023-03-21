@@ -21,7 +21,7 @@ pub async fn connect_ws(rpc_url: &str) -> Provider<Ws> {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RollupConfig {
     pub rollup_network: NetworkConfig,
-    batch_size: u8,
+    pub batch_size: u8,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
