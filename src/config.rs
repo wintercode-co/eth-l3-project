@@ -1,18 +1,34 @@
 use std::fs;
 
-use ethers::prelude::{LocalWallet, Wallet};
-use ethers::types::PathOrString::Path;
+use ethers::prelude::LocalWallet;
+use ethers::providers::{Http, JsonRpcClient, Provider, Ws};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct NetworkConfig {
-    pub rpc_urc: String,
+    pub rpc_url: String,
+}
+
+pub fn connect_http(rpc_url: &str) -> Provider<Http> {
+    Provider::<Http>::try_from(rpc_url).expect("Unable to connect to provider")
+}
+
+pub async fn connect_ws(rpc_url: &str) -> Provider<Ws> {
+    Provider::<Ws>::new(Ws::connect(rpc_url).await.expect("Unable to connect to provider"))
+}
+
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RollupConfig {
+    pub rollup_network: NetworkConfig,
+    batch_size: u8,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
     pub polygon_zkevm: NetworkConfig,
     pub scroll_zkevm: NetworkConfig,
+    pub rollup_config: RollupConfig,
     account_pk: String,
 }
 
@@ -23,6 +39,8 @@ impl Config {
     }
 
     pub fn get_signer(&self) -> LocalWallet {
-        self.account_pk.parse::<LocalWallet>().expect("Unable to generate wallet")
+        self.account_pk
+            .parse::<LocalWallet>()
+            .expect("Unable to generate wallet")
     }
 }

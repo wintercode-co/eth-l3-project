@@ -1,4 +1,7 @@
 use ethers::prelude::*;
+use futures::stream::StreamExt;
+
+use crate::config::{connect_http, connect_ws};
 
 mod config;
 
@@ -6,16 +9,35 @@ mod config;
 async fn main() {
     let conf = config::Config::new();
 
-    let polygon_zkevm_prov = Provider::<Http>::try_from(&conf.polygon_zkevm.rpc_urc)
-        .expect("Unable to connect to provider");
-    let scroll_zkevm_prov = Provider::<Http>::try_from(&conf.scroll_zkevm.rpc_urc)
-        .expect("Unable to connect to provider");
+    let scroll_zkevm_prov = connect_http(&conf.scroll_zkevm.rpc_url);
+    let rollup_config_prov = connect_ws(&conf.rollup_config.rollup_network.rpc_url).await;
 
 
-    let signer = conf.get_signer();
+    let mut last_process_block = 0;
 
-    let signer_address = signer.address();
-    let signer_balance = scroll_zkevm_prov.get_balance(signer_address, Option::None).await.unwrap();
-    println!("Signer Address {:?}", signer_address);
-    println!("Signer balance {:?}", signer_balance);
+    let mut stream = rollup_config_prov.subscribe_blocks().await.unwrap();
+    let mut transactions: Vec<H256> = vec![];
+
+    while let Some(mut block) = stream.next().await {
+        transactions.append(block.transactions.as_mut());
+
+        if block.number.unwrap().as_u64() - last_process_block >= 10 {
+            post_transactions_to_rollup(&transactions);
+            transactions = vec![];
+            last_process_block = block.number.unwrap().as_u64();
+        }
+    }
+
+    /*
+        let signer = conf.get_signer();
+        let signer_address = signer.address();
+        let signer_balance = scroll_zkevm_prov.get_balance(signer_address, Option::None).await.unwrap();
+        println!("Signer Address {:?}", signer_address);
+        println!("Signer balance {:?}", signer_balance);
+
+        */
+}
+
+fn post_transactions_to_rollup(transactions: &Vec<H256>) {
+    unimplemented!()
 }
