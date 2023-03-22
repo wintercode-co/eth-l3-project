@@ -1,13 +1,18 @@
 polygon_zkevm:
   rpc_url: "https://rpc.public.zkevm-test.net"
+  chain_id : 1442
     
 scroll_zkevm:
   rpc_url: "https://alpha-rpc.scroll.io/l2"
+  chain_id : 534353
 
 rollup_config:
   rollup_network:
     rpc_url: "ws://localhost:8546"
+    chain_id: 111
   batch_size: 2 # blocks
+  rollup_contract_address : "0x0000000000000000000000000000000000000000"
+  rollup_bridge_address : "0x0000000000000000000000000000000000000000"
 
 
 account_pk : "0x5dcc746cbd6c512cdd34cd1de8a9d0f038e6eb2ac9c4d12f2c22ab47de27fef4"

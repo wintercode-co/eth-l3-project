@@ -1,12 +1,14 @@
 use std::fs;
 
 use ethers::prelude::LocalWallet;
-use ethers::providers::{Http, JsonRpcClient, Provider, Ws};
+use ethers::providers::{Http, Provider, Ws};
+use ethers::types::Address;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct NetworkConfig {
     pub rpc_url: String,
+    pub chain_id: u32,
 }
 
 pub fn connect_http(rpc_url: &str) -> Provider<Http> {
@@ -14,14 +16,19 @@ pub fn connect_http(rpc_url: &str) -> Provider<Http> {
 }
 
 pub async fn connect_ws(rpc_url: &str) -> Provider<Ws> {
-    Provider::<Ws>::new(Ws::connect(rpc_url).await.expect("Unable to connect to provider"))
+    Provider::<Ws>::new(
+        Ws::connect(rpc_url)
+            .await
+            .expect("Unable to connect to provider"),
+    )
 }
-
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RollupConfig {
     pub rollup_network: NetworkConfig,
     pub batch_size: u8,
+    pub rollup_contract_address: Address,
+    pub rollup_bridge_address: Address,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
