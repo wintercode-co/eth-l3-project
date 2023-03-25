@@ -1,0 +1,22 @@
+polygon_zkevm:
+  rpc_url: "https://rpc.public.zkevm-test.net"
+  chain_id : 1442
+  account_pk : "0x5dcc746cbd6c512cdd34cd1de8a9d0f038e6eb2ac9c4d12f2c22ab47de27fef4"
+
+    
+scroll_zkevm:
+  rpc_url: "https://alpha-rpc.scroll.io/l2"
+  chain_id : 534353
+  account_pk : "0x5dcc746cbd6c512cdd34cd1de8a9d0f038e6eb2ac9c4d12f2c22ab47de27fef4"
+  rollup_contract_address: "0xfDa870ABD588E622d0a8529dbAAEf1E86C4Af1cc"
+  rollup_bridge_address: "0x7135711265EDF5019Abc5dcA6C5c8A5e4b1CA863"
+
+
+rollup_config:
+  rollup_network:
+    rpc_url: "ws://localhost:8546"
+    chain_id: 111
+    account_pk : "0x5dcc746cbd6c512cdd34cd1de8a9d0f038e6eb2ac9c4d12f2c22ab47de27fef4"
+  batch_size: 2 # blocks
+
+
