@@ -13,7 +13,7 @@ contract RollupBridge {
 
     function submitTransactions(bytes memory _transactions) public {
         require(msg.sender == owner, "Owner only");
-        // TODO: compress & validate transsactions
+        // TODO: compress & validate transactions
 
         (bool success, bytes memory result) =  rollupContract.call(_transactions);
         require(success, "Transaction submission failed");
@@ -42,7 +42,7 @@ contract Rollup {
     }
 
     function generateMerkleRoot(uint256 amount, bytes32[] calldata proof) public pure returns (bytes32) {
-        // encodePacked is used to prepare data for hashing - it tighly packs the data into a byte array, removes padding, etc.
+        // encodePacked is used to prepare data for hashing - it tightly packs the data into a byte array, removes padding, etc.
         // It produces a compact byte array which is then hashed.
         bytes32 root = keccak256(abi.encodePacked(amount));
         for (uint256 i = 0; i < proof.length; i++) {
