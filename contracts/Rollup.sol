@@ -6,17 +6,22 @@ contract RollupBridge {
     address public rollupContract;
     address public owner;
 
+    uint64 public lastProcessedBlock;
+
     constructor(address _rollupContract) {
         rollupContract = _rollupContract;
         owner = msg.sender;
     }
 
-    function submitTransactions(bytes memory _transactions) public {
+    function submitTransactions(bytes memory _transactions, uint64 blockNo) public {
         require(msg.sender == owner, "Owner only");
         // TODO: compress & validate transactions
+        uint64 lastBlock = lastProcessedBlock;
+        // require(lastProcessedBlock == blockNo - 1, "Invalid block number");
 
-        (bool success, bytes memory result) =  rollupContract.call(_transactions);
-        require(success, "Transaction submission failed");
+        // (bool success, bytes memory result) = rollupContract.call(_transactions);
+        //require(success, "Transaction submission failed");
+        lastProcessedBlock = lastBlock + 1;
         // post updated rollup state
     }
 }
@@ -37,7 +42,7 @@ contract Rollup {
         require(verifyProof(root, amount, proof), "Invalid proof");
         require(balances[msg.sender] >= amount, "not enough funds");
         balances[msg.sender] -= amount;
-        (bool success, ) = msg.sender.call{value: amount}("");
+        (bool success,) = msg.sender.call{value : amount}("");
         require(success, "failure to withdraw funds");
     }
 

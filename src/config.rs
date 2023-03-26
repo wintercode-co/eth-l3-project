@@ -12,6 +12,7 @@ pub struct NetworkConfig {
     pub rollup_contract_address: Option<Address>,
     pub rollup_bridge_address: Option<Address>,
     account_pk: String,
+    pub legacy: bool,
 }
 
 pub fn connect_http(rpc_url: &str) -> Provider<Http> {
